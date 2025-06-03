@@ -2,16 +2,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { SmartCartProvider } from './context/SmartCartContext';
 import './styles/globals.css';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { SmartCartProvider } from './context/SmartCartContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <SmartCartProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </SmartCartProvider>
+    <AuthProvider>
+      <SmartCartProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SmartCartProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
