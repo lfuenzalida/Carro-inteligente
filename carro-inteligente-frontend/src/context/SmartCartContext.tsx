@@ -13,6 +13,7 @@ interface SmartCartContextProps {
   cart: SmartCartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
+  decreaseQuantity: (id: number) => void; // 👈 ESTA LÍNEA
   total: number;
   budgetLimit: number;
   isOverBudget: boolean;
@@ -20,16 +21,14 @@ interface SmartCartContextProps {
   fetchSmartCart: (userId: number) => Promise<void>;
 }
 
+
 const SmartCartContext = createContext<SmartCartContextProps | undefined>(
   undefined
 );
 
 export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<SmartCartItem[]>([]);
-  const [budgetLimit, setBudgetLimit] = useState<number>(() => {
-    const saved = localStorage.getItem('budgetLimit');
-    return saved ? parseFloat(saved) : 0;
-  });
+  const [budgetLimit, setBudgetLimit] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
   const isOverBudget = budgetLimit > 0 && total > budgetLimit;
@@ -74,7 +73,6 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
       };
       setCart([...cart, newItem]);
     }
-    setTotal((prev) => prev + Number(product.price));
   };
 
   const removeFromCart = (id: number) => {
@@ -83,6 +81,32 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
     setCart(cart.filter((i) => i.id !== id));
     setTotal((prev) => prev - item.subtotal);
   };
+
+  const decreaseQuantity = (id: number) => {
+  const item = cart.find((i) => i.id === id);
+  if (!item) return;
+
+  if (item.quantity > 1) {
+    const updatedCart = cart.map((i) =>
+      i.id === id
+        ? {
+            ...i,
+            quantity: i.quantity - 1,
+            subtotal: (i.quantity - 1) * i.price
+          }
+        : i
+    );
+    setCart(updatedCart);
+  } else {
+    removeFromCart(id); // ya existe
+  }
+};
+
+  useEffect(() => {
+  const newTotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
+  setTotal(newTotal);
+}, [cart]);
+
 
   return (
     <SmartCartContext.Provider
@@ -94,7 +118,8 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
         budgetLimit,
         isOverBudget,
         updateBudgetLimit,
-        fetchSmartCart
+        fetchSmartCart,
+        decreaseQuantity,
       }}
     >
       {children}

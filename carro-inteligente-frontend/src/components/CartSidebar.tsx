@@ -5,7 +5,7 @@ import { FaShoppingCart, FaEdit } from 'react-icons/fa';
 
 const CartSidebar = () => {
 
-  const { cart, total, budgetLimit, isOverBudget, removeFromCart, updateBudgetLimit } = useSmartCart();
+  const { cart, total, budgetLimit, isOverBudget, removeFromCart, updateBudgetLimit, decreaseQuantity } = useSmartCart();
   const [isOpen, setIsOpen] = useState(false);
   const [newLimit, setNewLimit] = useState(() => {
   const stored = localStorage.getItem('budgetLimit');
@@ -25,6 +25,7 @@ const CartSidebar = () => {
       updateBudgetLimit(parsed);
       setShowBudgetModal(false);
       setBudgetActive(true);
+      setHasSeenOverBudget(false);
     }
   };
 
@@ -61,6 +62,7 @@ const CartSidebar = () => {
   const handleManageCart = () => {
     setShowOverBudgetPopup(false);
     setIsOpen(true);
+    setHasSeenOverBudget(true); // permite que vuelva a mostrarse si vuelve a exceder
   };
 
   return (
@@ -139,7 +141,10 @@ const CartSidebar = () => {
                   <strong>{item.name}</strong><br />
                   {item.quantity} x ${item.price.toLocaleString()}<br />
                   <em>Subtotal:</em> ${item.subtotal.toLocaleString()}<br />
-                  <button onClick={() => removeFromCart(item.id)}>Eliminar</button>
+                  <div>
+                    <button onClick={() => decreaseQuantity(item.id)}>➖</button>
+                    <button onClick={() => removeFromCart(item.id)} style={{ marginLeft: '0.5rem' }}>❌</button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -223,7 +228,16 @@ const CartSidebar = () => {
               <h3>Presupuesto excedido</h3>
               <p>Has sobrepasado tu presupuesto actual.</p>
               <button onClick={handleManageCart} style={{ marginTop: '1rem' }}>Gestionar carro</button>
-              <button onClick={() => setShowOverBudgetPopup(false).setIsopnm} style={{ marginTop: '1rem', marginLeft: '1rem' }}>Seguir comprando</button>
+              <button
+                    onClick={() => {
+                      setShowOverBudgetPopup(false);
+                      setHasSeenOverBudget(true); // 👈 evita que se vuelva a mostrar
+                    }}
+                    style={{ marginTop: '1rem', marginLeft: '1rem' }}
+                  >
+                    Seguir comprando
+                  </button>
+
             </div>
           </div>
         )}
