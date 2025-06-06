@@ -64,7 +64,7 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
       setCart(updatedCart);
     } else {
       const newItem: SmartCartItem = {
-        id: Date.now(),
+        id: product.id, // 👈 Usa el ID real del producto de la base de datos
         name: product.name,
         quantity: 1,
         price: product.price,

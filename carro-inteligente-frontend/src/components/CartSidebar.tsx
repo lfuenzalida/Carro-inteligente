@@ -65,6 +65,59 @@ const CartSidebar = () => {
     setHasSeenOverBudget(true); // permite que vuelva a mostrarse si vuelve a exceder
   };
 
+  const syncCartToServer = async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+
+  
+
+  for (const item of cart) {
+   await fetch(`http://localhost:3000/api/generatedCart/manual/${userId}`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    productId: item.id,
+    quantity: item.quantity
+  })
+});
+  
+  console.log('⏳ Enviando item al backend:', {
+    userId: userId,
+    id: item.id,
+    quantity: item.quantity
+  });
+  }
+};
+
+const handleConfirmPurchase = async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return alert("Debes iniciar sesión");
+
+  await syncCartToServer(); // 🔁 Insertar productos al backend antes de confirmar
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/purchase/${userId}`, {
+      method: 'POST'
+    });
+
+    if (res.ok) {
+      alert("✅ Compra registrada exitosamente");
+      window.location.reload(); // o limpia el carro manualmente
+    } else {
+      const data = await res.json();
+      alert(`❌ Error al confirmar: ${data.message || 'intenta nuevamente'}`);
+    }
+  } catch (err) {
+    console.error("Error al confirmar compra", err);
+    alert("❌ Ocurrió un error inesperado");
+  }
+};
+
+ 
+
+
   return (
     <>
       {/* Botón flotante */}
@@ -240,7 +293,28 @@ const CartSidebar = () => {
 
             </div>
           </div>
-        )}
+            )}
+            {cart.length > 0 && (
+      <div style={{ padding: '1rem', borderTop: '1px solid #ccc' }}>
+        <button
+          onClick={handleConfirmPurchase}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#28a745',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          Confirmar compra
+        </button>
+      </div>
+    )}
+
+
       </aside>
     </>
   );

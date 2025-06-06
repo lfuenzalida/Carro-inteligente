@@ -2,6 +2,46 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+
+
+// POST manual para insertar productos al carro generado
+router.post('/manual/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { productId, quantity } = req.body;
+
+  try {
+    await pool.query(
+      `INSERT INTO generated_cart (user_id, product_id, quantity, source)
+       VALUES (?, ?, ?, 'history')`,
+      [userId, productId, quantity]
+    );
+
+    res.status(201).json({ message: 'Producto insertado correctamente' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// POST - Agregar producto manualmente al carro generado
+router.post('/add/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { productId, quantity } = req.body;
+
+  try {
+    await pool.query(`
+      INSERT INTO generated_cart (user_id, product_id, quantity, source)
+      VALUES (?, ?, ?, 'history')
+    `, [userId, productId, quantity]);
+
+
+    res.status(201).json({ message: 'Producto agregado al carro generado' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // Generar carro inteligente (POST /api/smart-cart/:userId)
 router.post('/:userId', async (req, res) => {
   const { userId } = req.params;
@@ -108,12 +148,14 @@ router.get('/:userId', async (req, res) => {
       JOIN products p ON gc.product_id = p.id
       WHERE gc.user_id = ?
     `, [userId]);
+    
 
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 
