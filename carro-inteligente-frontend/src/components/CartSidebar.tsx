@@ -72,23 +72,36 @@ const CartSidebar = () => {
   
 
   for (const item of cart) {
-   await fetch(`http://localhost:3000/api/generatedCart/manual/${userId}`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    productId: item.id,
-    quantity: item.quantity
-  })
-});
-  
-  console.log('⏳ Enviando item al backend:', {
-    userId: userId,
-    id: item.id,
-    quantity: item.quantity
-  });
+  try {
+
+    console.log('Guardando producto:', item);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const res = await fetch(`http://localhost:3000/api/generatedCart/manual/${userId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: item.id,
+        quantity: item.quantity
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.error('❌ Error al guardar producto:', data.error || data.message);
+    } else {
+      console.log('✅ Producto guardado:', data);
+    }
+  } catch (err) {
+    console.error('❌ Error en fetch:', err);
   }
+}
+
+console.table(cart.map((item) => ({
+  userId,
+  productId: item.id,
+  quantity: item.quantity
+})));
+
 };
 
 const handleConfirmPurchase = async () => {

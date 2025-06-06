@@ -139,24 +139,15 @@ router.post('/:userId', async (req, res) => {
 
 // GET - Mostrar carro generado
 router.get('/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const [rows] = await pool.query(`
-      SELECT gc.id, p.name, gc.quantity, p.price, gc.source,
-             (p.price * gc.quantity) AS subtotal
-      FROM generated_cart gc
-      JOIN products p ON gc.product_id = p.id
-      WHERE gc.user_id = ?
-    `, [userId]);
-    
-
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const [rows] = await pool.query(`
+    SELECT gc.id, p.name, gc.quantity, p.price, gc.source,
+           (p.price * gc.quantity) AS subtotal
+    FROM generated_cart gc
+    JOIN products p ON gc.product_id = p.id
+    WHERE gc.user_id = ?
+  `, [userId]);
+  res.json(rows);
 });
-
-
 
 
 module.exports = router;

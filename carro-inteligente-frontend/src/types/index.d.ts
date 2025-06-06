@@ -4,6 +4,13 @@ export interface Product {
   price: number;
   category: string;
   is_offer: boolean;
+  description: string;
+  image_url: string;
+  stock: number;
+  brand: string;
+  unit: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface FavoriteItem {

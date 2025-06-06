@@ -38,16 +38,17 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('budgetLimit', newLimit.toString());
   };
 
-  const fetchSmartCart = async (userId: number) => {
-    try {
-      const res = await axios.get(`http://localhost:3000/api/smartcart/${userId}`);
-      setCart(res.data);
-      const calc = res.data.reduce((acc: number, item: SmartCartItem) => acc + item.subtotal, 0);
-      setTotal(calc);
-    } catch (error) {
-      console.error('Error al obtener el carro inteligente', error);
-    }
-  };
+ const fetchSmartCart = async (userId: number) => {
+  try {
+    const res = await axios.get(`http://localhost:3000/api/generatedCart/${userId}`);
+    setCart(res.data);
+    const calc = res.data.reduce((acc: number, item: SmartCartItem) => acc + item.subtotal, 0);
+    setTotal(calc);
+  } catch (error) {
+    console.error('Error al obtener el carro inteligente', error);
+  }
+};
+
 
   const addToCart = (product: Product) => {
     const found = cart.find((item) => item.name === product.name);

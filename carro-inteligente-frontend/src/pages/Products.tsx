@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Product} from '../types';
+import { Product } from '../types';
 import CartSidebar from '../components/CartSidebar';
 import { useSmartCart } from '../context/SmartCartContext';
+import ProductCard from '../components/ProductsCard';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,25 +24,20 @@ const Products = () => {
   }, []);
 
   return (
-    <div>
-      <div className="title"><h1>Productos disponibles</h1></div>
-    <div className="products-container">
-      {isOverBudget && <p style={{ color: 'red' }}>⚠ Presupuesto excedido</p>}
-      <div className="grid">
-        {products.map((product) => (
-          <div key={product.id} className="product-card">
-            <h3>{product.name}</h3>
-            <p>Categoría: {product.category}</p>
-            <p>Precio: ${product.price.toLocaleString()}</p>
-            {!!product.is_offer && (<span className="offer-badge">En Oferta 🏷</span>)}
-            <button onClick={() => addToCart(product)}>Agregar al carro</button>
-          </div>
-        ))}
+    <div style={{ padding: '2rem' }}>
+      <div className="title" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <h1>🛍️ Productos disponibles</h1>
+        {isOverBudget && <p style={{ color: 'red', fontWeight: 'bold' }}>⚠ Presupuesto excedido</p>}
       </div>
+      <div className="products-container">
+        <div className="grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+          ))}
+        </div>
+      </div>
+      <CartSidebar />
     </div>
-        <CartSidebar />
-    </div>
-    
   );
 };
 
