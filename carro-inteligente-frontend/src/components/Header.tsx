@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Header.css';
@@ -16,11 +15,12 @@ const Header = () => {
     <header className="header">
       <nav className="nav">
         <div className="nav-left">
-          <Link to="/" className="logo">🛒 Carro Inteligente</Link>
+          <Link to="/" className="logo">Super Market</Link>
         </div>
         <div className="nav-right">
-          <Link to="/" className="nav-link">Inicio</Link>
+          <Link to="/inicio" className="nav-link">Inicio</Link>
           <Link to="/productos" className="nav-link">Productos</Link>
+          <Link to="/favoritos" className="nav-link">Mi carro favorito</Link>
           {userId ? (
             <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
           ) : (

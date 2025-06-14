@@ -14,6 +14,7 @@ export interface Product {
 }
 
 export interface FavoriteItem {
+  product_id: any;
   id: number;
   name: string;
   quantity: number;
@@ -22,6 +23,7 @@ export interface FavoriteItem {
 }
 
 export interface SmartCartItem {
+  product: any;
   id: number;
   name: string;
   quantity: number;

@@ -12,7 +12,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <SmartCartProvider>
         <BrowserRouter>
-          <App />
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
         </BrowserRouter>
       </SmartCartProvider>
     </AuthProvider>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { Product } from '../types';
+import type { Product } from '../types';
 import CartSidebar from '../components/CartSidebar';
 import { useSmartCart } from '../context/SmartCartContext';
 import ProductCard from '../components/ProductsCard';

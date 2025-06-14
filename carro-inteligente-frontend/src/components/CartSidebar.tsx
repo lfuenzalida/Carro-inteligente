@@ -65,50 +65,54 @@ const CartSidebar = () => {
     setHasSeenOverBudget(true); // permite que vuelva a mostrarse si vuelve a exceder
   };
 
-  const syncCartToServer = async () => {
+ const syncCartToServer = async (): Promise<boolean> => {
   const userId = localStorage.getItem('userId');
-  if (!userId) return;
+  if (!userId) return false;
 
-  
-
-  for (const item of cart) {
   try {
+    const responses = await Promise.all(
+      cart.map(async (item) => {
+        const res = await fetch(`http://localhost:3000/api/generatedCart/add/${userId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId: item.id,
+            quantity: item.quantity,
+            source: 'history'
+          })
+        });
 
-    console.log('Guardando producto:', item);
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const res = await fetch(`http://localhost:3000/api/generatedCart/manual/${userId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        productId: item.id,
-        quantity: item.quantity
+        const data = await res.json();
+        console.log('<-----datos enviados al servidor------>');
+        console.log(res);
+
+        if (!res.ok) {
+          console.error('❌ Error al guardar producto:', data.error || data.message);
+          return false;
+        }
+
+        console.log('✅ Producto guardado:', data);
+        return true;
       })
-    });
+    );
 
-    const data = await res.json();
-    if (!res.ok) {
-      console.error('❌ Error al guardar producto:', data.error || data.message);
-    } else {
-      console.log('✅ Producto guardado:', data);
-    }
+    // Verifica si todos los inserts fueron exitosos
+    return responses.every(r => r === true);
+
   } catch (err) {
-    console.error('❌ Error en fetch:', err);
+    console.error('❌ Error general en syncCartToServer:', err);
+    return false;
   }
-}
-
-console.table(cart.map((item) => ({
-  userId,
-  productId: item.id,
-  quantity: item.quantity
-})));
-
 };
 
 const handleConfirmPurchase = async () => {
   const userId = localStorage.getItem('userId');
   if (!userId) return alert("Debes iniciar sesión");
 
-  await syncCartToServer(); // 🔁 Insertar productos al backend antes de confirmar
+  const synced = await syncCartToServer();
+  if (!synced) {
+    return alert("❌ Error al sincronizar productos antes de confirmar compra.");
+  }
 
   try {
     const res = await fetch(`http://localhost:3000/api/purchase/${userId}`, {
@@ -117,7 +121,7 @@ const handleConfirmPurchase = async () => {
 
     if (res.ok) {
       alert("✅ Compra registrada exitosamente");
-      window.location.reload(); // o limpia el carro manualmente
+      window.location.reload();
     } else {
       const data = await res.json();
       alert(`❌ Error al confirmar: ${data.message || 'intenta nuevamente'}`);
@@ -125,6 +129,31 @@ const handleConfirmPurchase = async () => {
   } catch (err) {
     console.error("Error al confirmar compra", err);
     alert("❌ Ocurrió un error inesperado");
+  }
+};
+
+const { fetchSmartCart } = useSmartCart(); // 👈 asegúrate de que esté en tu contexto
+
+const loadFavoritesToSmartCart = async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return alert("Debes iniciar sesión");
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/generatedCart/from-favorites/${userId}`, {
+      method: 'POST'
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      await fetchSmartCart(Number(userId)); // ✅ actualiza el carrito en estado
+      setIsOpen(true); // ✅ abre el sidebar para mostrarlo
+    } else {
+      alert(`❌ Error al cargar favoritos: ${data.error || 'intenta nuevamente'}`);
+    }
+  } catch (err) {
+    console.error("❌ Error al cargar favoritos:", err);
+    alert("Ocurrió un error inesperado");
   }
 };
 
@@ -194,7 +223,7 @@ const handleConfirmPurchase = async () => {
           top: 0,
           zIndex: 1
         }}>
-          <h2>🛒 Carro Inteligente</h2>
+          <h2>🛒 Carro de compras</h2>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
@@ -224,6 +253,22 @@ const handleConfirmPurchase = async () => {
           position: 'sticky',
           bottom: 0
         }}>
+          <button
+          onClick={loadFavoritesToSmartCart}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#6f42c1',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            marginBottom: '1rem'
+          }}
+        >
+          Cargar carro favorito
+        </button>
           <p><strong>Total:</strong> ${total.toLocaleString()}</p>
 
           {showBudgetPrompt && (
@@ -309,6 +354,7 @@ const handleConfirmPurchase = async () => {
             )}
             {cart.length > 0 && (
       <div style={{ padding: '1rem', borderTop: '1px solid #ccc' }}>
+        
         <button
           onClick={handleConfirmPurchase}
           style={{
@@ -324,8 +370,12 @@ const handleConfirmPurchase = async () => {
         >
           Confirmar compra
         </button>
+
+        
       </div>
     )}
+
+    
 
 
       </aside>

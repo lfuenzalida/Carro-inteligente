@@ -1,12 +1,12 @@
 // src/context/SmartCartContext.tsx
-import React, {
+import {
   createContext,
   useContext,
   useState,
   useEffect,
-  ReactNode
+  type ReactNode
 } from 'react';
-import { Product, SmartCartItem } from '../types';
+import type { FavoriteItem, Product, SmartCartItem } from '../types';
 import axios from 'axios';
 
 interface SmartCartContextProps {
@@ -83,6 +83,20 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
     setTotal((prev) => prev - item.subtotal);
   };
 
+ const importFavoritesToCart = (favorites: FavoriteItem[]) => {
+  const formatted = favorites.map((fav) => ({
+    id: fav.product_id,
+    name: fav.name,
+    price: Number(fav.price),
+    quantity: fav.quantity,
+    source: 'favorite',
+    subtotal: Number(fav.price) * fav.quantity
+  }));
+  setCart(formatted);
+};
+
+
+
   const decreaseQuantity = (id: number) => {
   const item = cart.find((i) => i.id === id);
   if (!item) return;
@@ -103,10 +117,12 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
   }
 };
 
-  useEffect(() => {
-  const newTotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
+
+useEffect(() => {
+  const newTotal = cart.reduce((acc, item) => acc + Number(item.subtotal), 0);
   setTotal(newTotal);
 }, [cart]);
+
 
 
   return (
@@ -120,6 +136,7 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
         isOverBudget,
         updateBudgetLimit,
         fetchSmartCart,
+        importFavoritesToCart,
         decreaseQuantity,
       }}
     >
