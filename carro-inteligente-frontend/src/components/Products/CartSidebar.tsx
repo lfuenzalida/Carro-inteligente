@@ -1,6 +1,6 @@
 // src/components/CartSidebar.tsx
-import React, { useState, useEffect } from 'react';
-import { useSmartCart } from '../context/SmartCartContext';
+import { useState, useEffect } from 'react';
+import { useSmartCart } from '../../context/SmartCartContext';
 import { FaShoppingCart, FaEdit } from 'react-icons/fa';
 
 const CartSidebar = () => {
@@ -12,7 +12,7 @@ const CartSidebar = () => {
   return stored ? stored : '0';
 });
   const [showBudgetPrompt, setShowBudgetPrompt] = useState(true);
-  const [budgetActive, setBudgetActive] = useState(() => budgetLimit > 0);
+  const [ , setBudgetActive] = useState(() => budgetLimit > 0);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [showOverBudgetPopup, setShowOverBudgetPopup] = useState(false);
   const [hasSeenOverBudget, setHasSeenOverBudget] = useState(false);
@@ -165,20 +165,8 @@ const loadFavoritesToSmartCart = async () => {
       {/* Botón flotante */}
       <button
         onClick={toggleSidebar}
-        style={{
-          position: 'fixed',
-          top: '1rem',
-          left: '1rem',
-          zIndex: 1001,
-          background: '#007bff',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '50%',
-          width: '50px',
-          height: '50px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
-        }}
+        className='side-button right'
+        aria-label='Abrir carrito'
       >
         <FaShoppingCart size={20} />
       </button>
@@ -223,20 +211,27 @@ const loadFavoritesToSmartCart = async () => {
           top: 0,
           zIndex: 1
         }}>
-          <h2>🛒 Carro de compras</h2>
+          <h2 style={{ color: 'var(--green-dark)' }}>🛒 Carro de compras</h2>
+
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }}>
           {cart.length === 0 ? (
-            <p>Tu carro está vacío</p>
+            <p style={{ color: 'var(--green-text)' }}>Tu carro está vacío</p>
           ) : (
             <ul>
               {cart.map((item) => (
-                <li key={item.id} style={{ marginBottom: '1rem' }}>
-                  <strong>{item.name}</strong><br />
+                <li
+                  key={item.id}
+                  style={{
+                    marginBottom: '1rem',
+                    color: 'var(--green-text)', // color general del texto
+                  }}
+                >
+                  <strong style={{ color: 'var(--green-dark)' }}>{item.name}</strong><br />
                   {item.quantity} x ${item.price.toLocaleString()}<br />
-                  <em>Subtotal:</em> ${item.subtotal.toLocaleString()}<br />
-                  <div>
+                  <em style={{ color: 'var(--green-dark)' }}>Subtotal:</em> ${item.subtotal.toLocaleString()}<br />
+                  <div style={{ marginTop: '0.25rem' }}>
                     <button onClick={() => decreaseQuantity(item.id)}>➖</button>
                     <button onClick={() => removeFromCart(item.id)} style={{ marginLeft: '0.5rem' }}>❌</button>
                   </div>
@@ -269,11 +264,13 @@ const loadFavoritesToSmartCart = async () => {
         >
           Cargar carro favorito
         </button>
-          <p><strong>Total:</strong> ${total.toLocaleString()}</p>
+          <p style={{ color: 'var(--green-text)' }}>
+            <strong style={{ color: 'var(--green-dark)' }}>Total:</strong> ${total.toLocaleString()}
+          </p>
 
           {showBudgetPrompt && (
             <div style={{ marginTop: '1rem' }}>
-              <p>¿Deseas activar el control de presupuesto?</p>
+              <p style={{ color: 'var(--green-text)' }} >¿Deseas activar el control de presupuesto?</p>
               <button onClick={handleActivateBudget} style={{ marginRight: '0.5rem' }}>Sí</button>
               <button onClick={handleDeclineBudget}>No</button>
             </div>
@@ -282,7 +279,7 @@ const loadFavoritesToSmartCart = async () => {
           {!showBudgetPrompt && budgetLimit > 0 && (
             <div style={{ marginTop: '1rem' }}>
               <p>
-                <strong>Presupuesto:</strong> ${budgetLimit.toLocaleString()}&nbsp;
+                <strong style={{ color: 'var(--green-text)' }}>Presupuesto: ${budgetLimit.toLocaleString()}&nbsp;</strong> 
                 <button onClick={() => setShowBudgetModal(true)} style={{ fontSize: '0.8rem' }}><FaEdit /></button>
               </p>
               {isOverBudget && <p style={{ color: 'red' }}>⚠ Presupuesto excedido</p>}
@@ -306,7 +303,7 @@ const loadFavoritesToSmartCart = async () => {
             }}
           >
             <div style={{ background: '#fff', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '320px' }}>
-              <h3>Editar presupuesto</h3>
+              <h3 style={{ color: 'var(--green-dark)' }}>Editar presupuesto</h3>
               <input
                 type="number"
                 value={newLimit}
@@ -336,8 +333,8 @@ const loadFavoritesToSmartCart = async () => {
             }}
           >
             <div style={{ background: '#fff', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '320px' }}>
-              <h3>Presupuesto excedido</h3>
-              <p>Has sobrepasado tu presupuesto actual.</p>
+              <h3 style={{ color: 'var(--green-dark)' }}>Presupuesto excedido</h3>
+              <p style={{ color: 'var(--green-text)' }}>Has sobrepasado tu presupuesto actual.</p>
               <button onClick={handleManageCart} style={{ marginTop: '1rem' }}>Gestionar carro</button>
               <button
                     onClick={() => {

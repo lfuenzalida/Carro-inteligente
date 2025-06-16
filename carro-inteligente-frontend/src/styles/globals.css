@@ -1,40 +1,184 @@
-.title {
-    padding: 2rem;
-    text-align: center;
+/* 1. Variables globales */
+:root {
+  --primary-color: #12692F;       /* Fondo principal */
+  --circle-color: #188C3E;        /* Color de los círculos */
+  --text-color: #ffffff;
+  --text-color-2: #000000;
+  --font-family: 'Segoe UI', sans-serif;
+
+  /* cart-side-bar-color */
+
+  --green-dark: #12692f;
+  --green-text: #188c3e;
+
+  --spacing-lg: 32px;
+  --spacing-md: 16px;
+  --circle-size: 250px;
 }
 
-.products-container {
+/* 2. Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 3. Estilo general */
+body {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  min-height: 100vh; /* 👈 permite crecer */
+  display: block;    /* 👈 evita que todo sea centrado como flex */
+}
+
+
+/* 4. Título principal */
+h1 {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+/* 5. Contenedor de botones circulares */
+.options-container {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* 6. Botones circulares */
+.circle-btn {
+  background-color: var(--circle-color);
+  color: var(--text-color);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.circle-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* 7. Responsive */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .circle-btn {
+    width: 180px;
+    height: 180px;
+    font-size: 1rem;
+  }
+}
+
+
+/* products desing */
+
+.products-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 2rem 0;
+}
+
+.side-button {
+  position: fixed;
+  top: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--circle-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.side-button img {
+  width: 30px;
+  height: 30px;
+}
+
+.side-button.left {
+  left: 2rem;
+}
+
+.side-button.right {
+  right: 2rem;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
   padding: 2rem;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5rem;
+/* button-profile-desing  */
+
+.profile-dropdown-container {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 1100;
 }
 
-.product-card {
-  background: #fff;
+
+.profile-dropdown {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  background: white;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 260px;              /* Fuerza que todas midan lo mismo */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  min-width: 180px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
-.product-content {
-  flex-grow: 1;
+.profile-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.offer-badge {
-  background-color: gold;
-  color: #000;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  font-weight: bold;
-  display: inline-block;
-  margin-top: 0.5rem;
+.profile-dropdown li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: var(--green-dark);
+  font-weight: 500;
+}
+
+.profile-dropdown li:hover {
+  background-color: var(--circle-color);
+  color: white;
+}
+
+@keyframes dropdownFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-dropdown {
+  animation: dropdownFadeIn 0.5s ease forwards;
 }

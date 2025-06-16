@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import type { Product } from '../types';
-import CartSidebar from '../components/CartSidebar';
+import CartSidebar from '../components/Products/CartSidebar';
 import { useSmartCart } from '../context/SmartCartContext';
-import ProductCard from '../components/ProductsCard';
+import ProfileButton from '../components/Products/ProfileButton';
+import ProductsHeader from '../components/Products/ProductsHeader';
+import ProductGrid from '../components/Products/ProductGrid';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const { addToCart, isOverBudget } = useSmartCart();
+  const { addToCart } = useSmartCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -24,21 +26,20 @@ const Products = () => {
   }, []);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div className="title" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1>🛍️ Productos disponibles</h1>
-        {isOverBudget && <p style={{ color: 'red', fontWeight: 'bold' }}>⚠ Presupuesto excedido</p>}
-      </div>
-      <div className="products-container">
-        <div className="grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
-          ))}
-        </div>
-      </div>
-      <CartSidebar />
+  <div className="products-page">
+     <ProductsHeader />
+    <ProfileButton />
+     <CartSidebar />
+   
+
+    
+    <div className="products-container">
+      <ProductGrid products={products} onAddToCart={addToCart} />
     </div>
-  );
+
+   
+  </div>
+);
 };
 
 export default Products;
