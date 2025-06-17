@@ -72,11 +72,12 @@ const CartSidebar = () => {
   try {
     const responses = await Promise.all(
       cart.map(async (item) => {
+        console.log('🟡 item que se envía:', item);
         const res = await fetch(`http://localhost:3000/api/generatedCart/add/${userId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            productId: item.id,
+            productId: item.product_id ?? item.id,
             quantity: item.quantity,
             source: 'history'
           })

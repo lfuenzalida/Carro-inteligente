@@ -38,11 +38,23 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('budgetLimit', newLimit.toString());
   };
 
- const fetchSmartCart = async (userId: number) => {
+const fetchSmartCart = async (userId: number) => {
   try {
     const res = await axios.get(`http://localhost:3000/api/generatedCart/${userId}`);
-    setCart(res.data);
-    const calc = res.data.reduce((acc: number, item: SmartCartItem) => acc + item.subtotal, 0);
+    
+    const mapped = res.data.map((item: any) => ({
+  id: item.product_id,                     // ID que usará el frontend
+  product_id: item.product_id,             // ID real para enviar a backend
+  name: item.name,
+  price: Number(item.price),
+  quantity: item.quantity,
+  source: item.source,
+  subtotal: Number(item.price) * item.quantity
+}));
+
+    setCart(mapped);
+
+    const calc = mapped.reduce((acc: number, item) => acc + item.subtotal, 0);
     setTotal(calc);
   } catch (error) {
     console.error('Error al obtener el carro inteligente', error);
@@ -70,7 +82,8 @@ export const SmartCartProvider = ({ children }: { children: ReactNode }) => {
         quantity: 1,
         price: product.price,
         source: product.is_offer ? 'offer' : 'history',
-        subtotal: Number(product.price)
+        subtotal: Number(product.price),
+        product: undefined
       };
       setCart([...cart, newItem]);
     }

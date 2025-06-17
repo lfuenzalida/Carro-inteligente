@@ -23,6 +23,7 @@ export interface FavoriteItem {
 }
 
 export interface SmartCartItem {
+  product_id: number;
   product: any;
   id: number;
   name: string;
