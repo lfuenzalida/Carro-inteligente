@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useFavoriteCart } from '../context/FavoriteCartContext';
 import type { Product } from '../types';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
 
 interface RecommendationGroups {
   most: Product[];
@@ -10,6 +13,8 @@ interface RecommendationGroups {
 }
 
 const FavoriteCartPage = () => {
+
+const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
   const {
     favorites,
@@ -91,12 +96,29 @@ const FavoriteCartPage = () => {
     <div className="favorite-cart-page">
       <div className="top-bar">
         <div className="left">
-          <div className="icon-button">&#8592;</div>
+          <div
+            className="icon-button"
+            title="Volver o salir"
+            onClick={() => navigate('/productos')}
+          >
+            🔙
+          </div>
         </div>
         <div className="page-title">Configurando tu carro favorito</div>
         <div className="right">
-          <div className="icon-button" onClick={() => setView('recommended')}>🤖</div>
-          <div className="icon-button" onClick={() => setView('catalog')}>🛒</div>
+          <div
+            className={`icon-button ${view === 'recommended' ? 'active' : ''}`}
+            onClick={() => setView('recommended')}
+          >
+            🤖
+          </div>
+          <div
+            className={`icon-button ${view === 'catalog' ? 'active' : ''}`}
+            onClick={() => setView('catalog')}
+          >
+            🛒
+          </div>
+
         </div>
       </div>
 

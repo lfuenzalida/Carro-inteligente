@@ -218,6 +218,18 @@ h1 {
   cursor: pointer;
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+}
+
+.icon-button.active {
+  background-color: var(--circle-color);
+  color: white;
+  box-shadow: 0 0 0 3px rgba(24, 140, 62, 0.4); /* anillo verde alrededor */
+  transform: scale(1.15);
 }
 
 .page-title {
@@ -243,7 +255,6 @@ h1 {
 .section-box {
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-color-2);
-  padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   height: 70vh;

@@ -48,3 +48,26 @@ export interface User {
   email: string;
   budget_limit: number;
 }
+
+export interface PurchaseRecord {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+  total: number;
+  purchased_at: string; // ISO string
+}
+
+export interface ProductSummary {
+  name: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
+export interface GroupedPurchase {
+  timestamp: string; // e.g., "2025-06-05T14:30"
+  total: number;
+  products: ProductSummary[];
+}
+
