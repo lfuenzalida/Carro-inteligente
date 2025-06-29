@@ -48,17 +48,18 @@ export interface User {
   email: string;
   budget_limit: number;
 }
-
 export interface PurchaseRecord {
-  id: number;
+  id: number;                      // id del historial
+  product_id: number;              // id del producto original ✅
   name: string;
-  quantity: number;
-  price: number;
-  total: number;
-  purchased_at: string; // ISO string
+  quantity: number | string;
+  price: number | string;
+  total: number | string;
+  purchased_at: string;
 }
 
 export interface ProductSummary {
+  id: any;
   name: string;
   quantity: number;
   price: number;

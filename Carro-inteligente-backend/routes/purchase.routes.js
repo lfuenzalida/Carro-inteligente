@@ -41,8 +41,14 @@ router.get('/:userId', async (req, res) => {
 
   try {
     const [rows] = await pool.query(`
-      SELECT ph.id, p.name, ph.quantity, ph.price,
-             (ph.quantity * ph.price) AS total, ph.purchased_at
+      SELECT 
+        ph.id, 
+        ph.product_id,  -- <-- Agregamos aquí
+        p.name, 
+        ph.quantity, 
+        ph.price,
+        (ph.quantity * ph.price) AS total, 
+        ph.purchased_at
       FROM purchase_history ph
       JOIN products p ON ph.product_id = p.id
       WHERE ph.user_id = ?

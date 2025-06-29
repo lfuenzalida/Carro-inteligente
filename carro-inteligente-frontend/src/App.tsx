@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import FavoriteCartPage from './pages/FavoriteCart';
 import PrivateRoute from './components/PrivateRoutes';
 import { FavoriteCartProvider } from './context/FavoriteCartContext'; // 👈 importar el provider
+import PurchaseHistory from './pages/PurchareHistory';
 
 const App = () => {
 
@@ -13,6 +14,7 @@ const App = () => {
       <>
         <Routes>
           <Route path="/" element={<Navigate to="/productos" />} />
+          <Route path="/historial-compras" element={<PurchaseHistory />} />
           <Route path="/favoritos" element={<FavoriteCartPage />} />
           <Route path="/login" element={<Login />} />
           <Route
@@ -20,7 +22,7 @@ const App = () => {
             element={
               <PrivateRoute>
                 <Products />
-              </PrivateRoute>
+              </ PrivateRoute>
             }
           />
           <Route
